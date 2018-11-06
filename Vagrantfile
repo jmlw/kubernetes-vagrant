@@ -78,8 +78,8 @@ $configureMaster = <<-SCRIPT
     chown $(id -u vagrant):$(id -g vagrant) /home/vagrant/.kube/config
     # install Calico pod network addon
     export KUBECONFIG=/etc/kubernetes/admin.conf
-    kubectl apply -f https://raw.githubusercontent.com/jmlw/kubernetes-vagrant/master/calico/rbac-kdd.yaml
-    kubectl apply -f https://raw.githubusercontent.com/jmlw/kubernetes-vagrant/master/calico/calico.yaml
+    kubectl apply -f https://raw.githubusercontent.com/jmlw/kubernetes-vagrant/master/networking/calico/rbac-kdd.yaml
+    kubectl apply -f https://raw.githubusercontent.com/jmlw/kubernetes-vagrant/master/networking/calico/calico.yaml
     kubeadm token create --print-join-command >> /etc/kubeadm_join_cmd.sh
     chmod +x /etc/kubeadm_join_cmd.sh
     # required for setting up password less ssh between guest VMs

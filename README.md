@@ -10,6 +10,22 @@ This is not intended to be a production environment, and may be vulernable.
 - Configure Vagrantfile to meet your needs and to fit your network setup
 - Run `vagrant up`, then get a coffee while the VMs are provisioned
 
+It is also possible to provision additional nodes by adding a new block to the `servers` variable:
+```
+servers = [
+    {
+        :name => "k8s-node-3",
+        :type => "node",
+        :box => "ubuntu/xenial64",
+        :box_version => "20180831.0.0",
+        :eth1 => "192.168.0.213",
+        :mem => "1024",
+        :cpu => "1",
+        :mac => "0800275f7018"
+    }
+]
+ ```
+
 ## Cleanup
 Run `vagrant destroy -f` to forcibly remove VMs and related resources
 

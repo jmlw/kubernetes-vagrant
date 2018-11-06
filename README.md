@@ -34,6 +34,9 @@ The VMs provisioned by this vagrant file are configured to run in **bridged** mo
 
 Each node can be configured independently by modifying the object defined in the servers array.
 
+### Other notes:
+This configuration uses the Kubernetes Datastore API to configure Calico, not etcd
+
 ---
 
 # Disclaimer

@@ -22,4 +22,6 @@ Each node can be configured independently by modifying the object defined in the
 
 # Disclaimer
 
-This has only been tested on a Ubuntu Xenial based system. There is no warranty or guarentee supplied with anything code or configuration in this repository.
+This has only been tested on a Ubuntu Xenial based system. 
+
+There is no warranty or guarentee supplied with any code or configuration in this repository.

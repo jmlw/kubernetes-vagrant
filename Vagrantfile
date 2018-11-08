@@ -8,7 +8,7 @@ servers = [
         :type => "master",
         :box => "ubuntu/xenial64",
         :box_version => "20180831.0.0",
-        :eth1 => "192.168.0.210",
+        :eth1 => "192.168.10.210",
         :mem => "1024",
         :cpu => "1",
         :mac => "0800275f7015"
@@ -18,7 +18,7 @@ servers = [
         :type => "node",
         :box => "ubuntu/xenial64",
         :box_version => "20180831.0.0",
-        :eth1 => "192.168.0.211",
+        :eth1 => "192.168.10.211",
         :mem => "1024",
         :cpu => "1",
         :mac => "0800275f7016"
@@ -28,7 +28,7 @@ servers = [
         :type => "node",
         :box => "ubuntu/xenial64",
         :box_version => "20180831.0.0",
-        :eth1 => "192.168.0.212",
+        :eth1 => "192.168.10.212",
         :mem => "1024",
         :cpu => "1",
         :mac => "0800275f7017"
@@ -92,7 +92,7 @@ SCRIPT
 $configureNode = <<-SCRIPT
     echo "This is worker"
     apt-get install -y sshpass
-    sshpass -p "vagrant" scp -o StrictHostKeyChecking=no vagrant@192.168.0.210:/etc/kubeadm_join_cmd.sh .
+    sshpass -p "vagrant" scp -o StrictHostKeyChecking=no vagrant@192.168.10.210:/etc/kubeadm_join_cmd.sh .
     sh ./kubeadm_join_cmd.sh
 SCRIPT
 
@@ -106,17 +106,17 @@ Vagrant.configure("2") do |config|
             config.vm.hostname = opts[:name]
 
             # comment out for using private network (NAT)
-            config.vm.network :public_network, mac: opts[:mac]
+#            config.vm.network :public_network, mac: opts[:mac]
             #config.vm.network bridge: "#{eth_adapter}"
-            
+
             # uncomment for private network (NAT)
-            #config.vm.network :private_network, ip: opts[:eth1]
+            config.vm.network :private_network, ip: opts[:eth1]
 
 
             config.vm.provider "virtualbox" do |v|
 
                 v.name = opts[:name]
-            	 v.customize ["modifyvm", :id, "--groups", "/Kubernetes Development"]
+                v.customize ["modifyvm", :id, "--groups", "/Kubernetes Development"]
                 v.customize ["modifyvm", :id, "--memory", opts[:mem]]
                 v.customize ["modifyvm", :id, "--cpus", opts[:cpu]]
 
@@ -127,13 +127,19 @@ Vagrant.configure("2") do |config|
 
             if opts[:type] == "master"
                 config.vm.provision "shell", inline: $configureMaster
-                config.vm.network ip: opts[:ip]
+                # Forwarding control ports for access from outside of localhost. See
+                # https://kubernetes.io/docs/reference/access-authn-authz/controlling-access/
+                # for mor information on default kubernetes ports.
+                config.vm.network "forwarded_port", guest: 6443, host: 6443, protocol: "tcp"
+                config.vm.network "forwarded_port", guest: 6443, host: 6443, protocol: "udp"
             else
                 config.vm.provision "shell", inline: $configureNode
+                config.vm.usable_port_range = 6444..6500
+                config.vm.network "forwarded_port", guest: 6443, host: 6443, auto_correct: true
             end
 
         end
 
     end
 
-end 
+end

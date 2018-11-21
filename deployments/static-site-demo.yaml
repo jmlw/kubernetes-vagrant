@@ -27,16 +27,17 @@ metadata:
   namespace: default
 spec:
   selector:
-    k8s-app: static-site
+    app: static-site
   ports:
   - name: http
     port: 80
-    targetPort: 8080
+    targetPort: 80
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: static-site-ingress
+  namespace: default
   annotations:
     kubernetes.io/ingress.class: traefik
     traefik.frontend.rule.type: PathPrefixStrip
